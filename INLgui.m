@@ -26,6 +26,7 @@ set(h.folder, 'Callback', @callback_folder);
 set([h.right,h.left],'Max', 10, 'Min', 1,'Callback',@callback_listbox);
 set(h.plot,'Callback',@callback_plot);
 set(h.figure1,'NextPlot','new');
+set([h.overlay, h.sort], 'Value', 0);
 
 % Initilize
 callback_folder(h.folder,[],'init');
@@ -150,10 +151,10 @@ R = guidata(hObject);
 if length(right_idx) == 1 && right_idx == 1;
     INLplot(R, 'left', left_list(left_idx),...
         'overlay', get(h.overlay,'value'),...
-        'prefix', names(idx));
+        'prefix', names(idx), 'sort', get(h.sort,'value'));
 else
     INLplot(R, 'left', left_list(left_idx), ...
         'right', right_list(right_idx),...
         'overlay', get(h.overlay,'value'),...
-        'prefix', names(idx));
+        'prefix', names(idx), 'sort', get(h.sort,'value'));
 end

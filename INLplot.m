@@ -40,6 +40,7 @@ opt.left = {};
 opt.right = {};
 opt.overlay = false;
 opt.prefix = {};
+opt.sort = false;
 opt = gather_user_options(opt, varargin{:});
 
 % Report an error if left-hand data not defined
@@ -76,6 +77,10 @@ for i = 1:length(input);
     t = cellstr(extract_data(R,'asciitime'));
     x = datenum(t,'ddd mmm dd HH:MM:SS YYYY');
     
+    % Sort the data with time, if desired
+    idx = 1:length(x);
+    if opt.sort; [x,idx] = sort(x); end
+    
     % Normalize the data to the start of the test, if desired
     if opt.overlay; x = x - x(1); end
     
@@ -83,7 +88,8 @@ for i = 1:length(input);
     left{end+1} = x;
     
     % Extract the desired data for the left-side plot (required)
-    [left{end+1}, L0] = extract_data(R, opt.left);
+    [Y, L0] = extract_data(R, opt.left);
+    left{end+1} = Y(idx);
     
     % Add filenames to legend
     if ~isempty(opt.prefix);
