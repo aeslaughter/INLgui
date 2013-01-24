@@ -28,6 +28,11 @@ function INLplot(input, varargin)
 %       Setting this value to true removes the time stamping and begins all
 %       plots at the same time.
 %
+%   Sort
+%       true | {false}
+%       Setting this to true sorts the data according to the timestamp,
+%       ignoring the order of the data in the file.
+%
 %   Prefix
 %       cell arra of char
 %       If mulitple data sets are given (i.e., cell array of filenames) the
@@ -102,7 +107,8 @@ for i = 1:length(input);
     % Add the right-hand data
     if ~isempty(opt.right);
         right{end+1} = x;
-        [right{end+1}, L1] = extract_data(R, opt.right);
+        [Y, L1] = extract_data(R, opt.right);
+        right{end+1} = Y(idx);
         if ~isempty(opt.prefix);
             for j = 1:length(L1);
                 L1{j} = [opt.prefix{i},':',L1{j}];
