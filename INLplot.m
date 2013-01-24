@@ -92,7 +92,7 @@ function INLplot(input, varargin)
     % Build left-hand side only plot
     if isempty(opt.right);
         [X1, Y1, L1] = extractData(R, opt.left, opt);
-        plot(X1,Y1);
+        h = plot(X1,Y1);
         datetick('x');
         lgnd = L1;
         
@@ -147,6 +147,11 @@ function [X,Y,L] = extractData(R, variables, opt)
         variables = {variables};
     end
 
+    % Make sure the prefix is a cell
+    if ischar(opt.prefix);
+        opt.prefix = {opt.prefix};
+    end
+    
     % Initialize cell storage structures
     X = {}; Y = {}; L = {};
 
@@ -156,6 +161,9 @@ function [X,Y,L] = extractData(R, variables, opt)
         % Extract the time data
         t = cellstr(extractVariable(R{r}, 'asciitime'));
         x = datenum(t, 'ddd mmm dd HH:MM:SS YYYY');
+        if opt.overlay;
+            x = x - x(1);
+        end
 
         % Loop through each variable and get the data
         for v = 1:length(variables)
@@ -163,8 +171,13 @@ function [X,Y,L] = extractData(R, variables, opt)
             
             % If data exists, append the storage structures
             if ~isempty(y);
-                Y{end+1} = y;
-                X{end+1} = x;
+                if opt.sort;
+                    [~,idx] = sort(x);
+                else
+                    idx = 1:length(x);
+                end
+                Y{end+1} = y(idx);
+                X{end+1} = x(idx);
                 
                 % Append legend, including prefix if specified
                 if ~opt.hideprefix && ~isempty(opt.prefix) && length(R) == length(opt.prefix);
